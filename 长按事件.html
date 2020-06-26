@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>长按事件</title>
+    <style>
+        .box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .btn {
+            margin: auto;
+            border: none;
+            outline: none;
+            height: 36px;
+            min-width: 64px;
+            padding: 0 16px;
+            background-color: #6200ea;
+            color: white;
+            align-items: center;
+            border-radius: 4px;
+            position: relative;
+        }
+        .vshow{
+            background: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 10px;
+            transform: translate(-50%,-50%);
+            animation: showan  ease 600ms 1;
+            border-radius: 4px;
+            opacity: .3;
+        }
+        @keyframes showan {
+            0%{
+                transform:  translate(-50%,-50%) scale(1);
+                
+                
+            }
+            25%{
+                transform:  translate(-50%,-50%) scale(2);
+            }
+            50%{
+                transform:  translate(-50%,-50%) scale(4);
+            }
+            75%{
+                transform:  translate(-50%,-50%) scale(6);
+            }
+            100%{
+                transform:  translate(-50%,-50%) scale(8);
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <button class="btn">
+            点我触发
+        </button>
+    </div>
+</body>
+<script>
+    const btn = document.querySelector('.btn')
+    const show= document.createElement('span')
+    var timeOutEvent=0;
+    show.setAttribute('class','vshow')
+    //touchstart
+    btn.addEventListener('touchstart',(e)=>{
+        timeOutEvent = setTimeout(()=>{
+            console.log('长按触发')
+        },500); //500ms后触发长按事件
+        e.preventDefault();
+        btn.append(show)
+        setTimeout(()=>{
+            btn.removeChild(btn.childNodes[1])
+        },300) 
+    })
+    //触发拖动取消
+    btn.addEventListener('touchmove',()=>{
+        console.log('拖动事件')
+        clearTimeout(timeOutEvent)
+        timeOutEvent = 0
+    })
+    btn.addEventListener('touchend',()=>{
+        console.log('点击事件')
+        clearTimeout(timeOutEvent);
+        return false
+    })
+</script>
+
+</html>

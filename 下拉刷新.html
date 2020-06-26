@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下拉刷新</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            width: 100vw;
+            height: 100vh;
+            background: rosybrown;
+            transition: 300ms all ease;
+            position: relative;
+        }
+
+        .loadding {
+            position: absolute;
+            top: -25px;
+            transform: translateX(-50%);
+            left: 50%;
+        }
+
+        .tips {
+            color: #fff;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            background-color: rgba(50, 50, 51, 0.88);
+            border-radius: 8px;
+            line-height: 20px;
+            max-width: 70%;
+            padding: 10px;
+            transform: translateX(-50%);
+            display: none;
+            transition: 300ms all ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div style="color:white;text-align:center">下拉试一试</div>
+        <div class='loadding'>下拉刷新...</div>
+        <div class='tips'>刷新成功</div>
+    </div>
+    <script>
+        //touchmove : 拖动（手指在触摸屏上移动）
+        //touchend : 触摸结束（手指从触摸屏上移开）
+        let OnTop = 0
+        const box = document.querySelector('.box')
+        const lodding = document.querySelector('.loadding')
+        const tips = document.querySelector('.tips')
+        //监听拖拽变化
+        box.addEventListener('touchmove', (e) => {
+            //阻止默认行为防止滚动条滚动
+            e.preventDefault();
+            if (OnTop === 0) {
+                //首次
+                return OnTop = e.targetTouches[0].screenY;
+            }
+            let x = e.targetTouches[0].screenY - OnTop;
+            //负数不触发下拉刷新
+            if (x < 0) return;
+            //设置封顶临界点
+            return box.style.transform = x>200 ? "translate3d(0,200px,0)" :`translate3d(0,${x}px,0)` ;
+        });
+        //监听手指离开屏幕
+        box.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            box.style.transform = `translate3d(0,40px,0)`;
+            lodding.innerText = '刷新中...'
+            setTimeout(() => {
+                box.style.transform = `translate3d(0,0,0)`;
+                tips.style.display = 'block';
+                lodding.innerText = '下拉刷新...';
+                setTimeout(() => {
+                    tips.style.display = 'none';
+                }, 500);
+            }, 1000);
+        })
+    </script>
+</body>
+
+</html>
